@@ -1,0 +1,3 @@
+- Welcome to this repository, where I will be posting solutions to daily LeetCode problems. 
+- I will try to explain the solutions as clearly as possible to help you understand better.
+- Give this project a star if you find it helpful.
