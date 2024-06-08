@@ -42,7 +42,6 @@ class Solution {
       sum+=num;
       int rem = sum % k;
 
-      //more concise way will be, if(map.getOrDefault(rem, -1) > 0)
       if(map.containsKey(rem) && (i - (map.get(rem)+1)) > 0){
         return true;
       }
