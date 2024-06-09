@@ -1,61 +1,58 @@
 import java.util.*;
 /*
-Given an integer array nums and an integer k, return true if nums has a good subarray or false otherwise.
+Given an integer array nums and an integer k, return the number of non-empty subarrays that have a sum divisible by k.
+A subarray is a contiguous part of an array.
 
-A good subarray is a subarray where:
-its length is at least two, and
-the sum of the elements of the subarray is a multiple of k.
-
-Note that:
-A subarray is a contiguous part of the array.
-An integer x is a multiple of k if there exists an integer n such that x = n * k. 0 is always a multiple of k.
 
 
 Example 1:
-Input: nums = [23,2,4,6,7], k = 6
-Output: true
-Explanation: [2, 4] is a cont
+
+Input: nums = [4,5,0,-2,-3,1], k = 5
+Output: 7
+Explanation: There are 7 subarrays with a sum divisible by k = 5:
+[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+Example 2:
+
+Input: nums = [5], k = 9
+Output: 0
+
+
+Constraints:
+1 <= nums.length <= 3 * 10^4
+-10^4 <= nums[i] <= 10^4
+2 <= k <= 10^4
 */
 
 /*
 .................................Explanation ..................................................
-* 1. Whenever we see some kind of subarray with sum kind of problem, always try to think HashMap+PrefixSum
-* 2. Now in case of subarray sum % k kind of problem, we generally have to play with remainder
-* 3. here we are going to maintain (prefixSum % k) in the hashmap, and check for every new prefix sum we already have prefix sum % k in our map or not.
-* */
+*
+1. Main idea here to think about how to handle the negative number, its pretty similar to count number of subarray with sum k kind of problem.
+2. Main algo is if A = [1, 2, -3, 3], if we keep maintaining a prefix sum, at index 2 we get sum 0, have seen 0 before? if yes then we found a subarray with 0 sum.
+3. Same idea can applied to more generic case like subarray with sum k
+*/
 
 /*
-..................................More easier variation of this kind of problem ...................................
+..................................More easier variation of this kind of problem(these are roots algo for such kind of problem) ...................................
 1. https://www.techiedelight.com/find-subarray-having-given-sum-given-array/ --> 2nd part Hashing approach.
 2. https://www.techiedelight.com/find-subarrays-given-sum-array/ --> see the hashing approach
- */
-
+*/
 
 class Solution {
-  public boolean checkSubarraySum(int[] nums, int k) {
+  public int subarraysDivByK(int[] nums, int k) {
+
+    int[] count = new int[k];
+    count[0] = 1;
+    int n = nums.length;
+    int ans = 0;
 
     int sum = 0;
-    var map = new HashMap<Integer, Integer>();
-    map.put(0, -1);
-    int i = 0;
     for(int num : nums){
-      sum+=num;
-      int rem = sum % k;
-
-      //more concise way will be, if(map.getOrDefault(rem, -1) > 0)
-      if(map.containsKey(rem) && (i - (map.get(rem)+1)) > 0){
-        return true;
-      }
-
-      /*
-      we wanted to have the subarray with atleast size 2, so if we already have some remainder in out map
-      we don't wanted to update it, because it will reduces our chances to find big subarray.
-      eg, if our map contains {3 : 1}, and later we can agian 3 at index 8, we need to keep index 3 with index 1, it will maximise our chances to find subarray size greater than 1.
-      */
-      map.putIfAbsent(rem, i);
-      i++;
+      //extra +k will help us handle negative remainder
+      sum = (sum + num % k + k) % k;
+      ans+=count[sum];
+      count[sum]++;
     }
 
-    return false;
+    return ans;
   }
 }
